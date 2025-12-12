@@ -205,7 +205,7 @@ Bu proje eğitim ve araştırma amaçlıdır. Ticari kullanım için izin gereke
 
 ## 👤 Yazar
 
-**Sena Ayyıldız**
+**Sena Ay**
 - GitHub: [@senaayy](https://github.com/senaayy)
 - Portfolio: Computational Cognitive Lab
 
