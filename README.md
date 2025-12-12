@@ -109,6 +109,11 @@ python analyze_errors.py
 python load_eeg_data.py
 ```
 
+**Gelişmiş EEG analizi:**
+```bash
+python eeg_analysis_example.py
+```
+
 **Filtreleme ve görselleştirme:**
 ```bash
 python eeg_filtering_analysis.py
@@ -133,15 +138,14 @@ Computational-Cognitive-Lab/
 ├── analyze_data.py            # Stroop Etkisi analizi
 ├── analyze_errors.py          # Hata tipi analizi
 ├── load_eeg_data.py           # Basit EEG yükleme
-├── eeg_filtering_analysis.py   # EEG filtreleme ve görselleştirme
+├── eeg_analysis_example.py    # Gelişmiş EEG analiz örnekleri
+├── eeg_filtering_analysis.py  # EEG filtreleme ve görselleştirme
 ├── eeg_epoching_erp.py        # Epoklama ve ERP analizi
 ├── eeg_ai_diagnosis.py        # AI destekli teşhis (demo)
+├── update_github_repo.py      # GitHub repository güncelleme scripti
 ├── requirements.txt           # Python bağımlılıkları
 ├── README.md                  # Bu dosya
-├── TEST_ACIKLAMALARI.md       # Test ve grafik açıklamaları
-├── EEG_FILTRELEME_KILAVUZU.md # EEG filtreleme kılavuzu
-├── EPOKLAMA_ERP_KILAVUZU.md   # Epoklama ve ERP kılavuzu
-├── SPRINT_3_4_HAZIRLIK.md    # Sprint hazırlık dokümantasyonu
+├── GITHUB_SETUP.md            # GitHub kurulum kılavuzu
 ├── data/                      # CSV veri dosyaları (otomatik oluşturulur)
 └── results/                   # Analiz grafikleri (otomatik oluşturulur)
 ```
