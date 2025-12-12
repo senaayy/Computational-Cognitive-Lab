@@ -35,8 +35,10 @@ Bu depo, bir Yazılım Mühendisi'nin biyomedikal ve nöroteknoloji alanına ge�
 **Özellikler:**
 - Epoklama (Epoching) - Uyaran etrafında zaman pencereleri
 - ERP hesaplama ve karşılaştırma
+- **P300 Kanıtı - Tek grafikte Oddball vs Standart karşılaştırması**
 - Topografik haritalar (Topomap)
 - Joint plot görselleştirmesi
+- Parietal bölge odaklı P300 analizi
 
 ### 3. Yapay Zeka & Biyobelirteç Geliştirme
 
@@ -124,6 +126,16 @@ python eeg_filtering_analysis.py
 python eeg_epoching_erp.py
 ```
 
+Bu script şunları içerir:
+- Olay tespiti (find_events)
+- Epoklama (Epoching) - uyaran etrafında zaman pencereleri
+- ERP hesaplama (Event-Related Potentials)
+- **P300 Kanıtı - Tek grafikte karşılaştırmalı görselleştirme**
+- Oddball vs Standart karşılaştırması
+- P300 dalgası analizi
+- Topografik haritalar (Topomap)
+- Joint plot görselleştirmesi
+
 **Yapay Zeka destekli teşhis (Demo):**
 ```bash
 python eeg_ai_diagnosis.py
@@ -164,9 +176,12 @@ Computational-Cognitive-Lab/
 - ✅ Veri yükleme ve filtreleme
 - ✅ Epoklama (Epoching)
 - ✅ ERP hesaplama
-- ✅ P300 dalgası analizi
-- ✅ Topografik haritalar
+- ✅ **P300 Kanıtı - Tek grafikte Oddball vs Standart karşılaştırması**
+- ✅ P300 dalgası analizi ve tespiti
+- ✅ Topografik haritalar (Topomap)
+- ✅ Joint plot görselleştirmesi
 - ✅ Frekans bantları analizi
+- ✅ Parietal bölge odaklı analiz
 
 ### Makine Öğrenmesi
 - ✅ Özellik çıkarımı (14 özellik)
