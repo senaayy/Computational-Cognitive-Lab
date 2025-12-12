@@ -268,25 +268,23 @@ def plot_topomaps(evoked_standard, evoked_oddball, times=[0.1, 0.2, 0.3, 0.4, 0.
     
     # Standart için topomap
     print("  → Standart Ses topomap'leri...")
-    fig = evoked_standard.plot_topomap(times=times, 
-                                       title='Standart Ses - Topografik Harita',
-                                       show=False)
+    fig = evoked_standard.plot_topomap(times=times, show=False)
+    fig.suptitle('Standart Ses - Topografik Harita', fontsize=14, fontweight='bold')
     plt.show()
     
     # Oddball için topomap
     print("  → Oddball Ses topomap'leri...")
-    fig = evoked_oddball.plot_topomap(times=times,
-                                      title='Oddball Ses - Topografik Harita',
-                                      show=False)
+    fig = evoked_oddball.plot_topomap(times=times, show=False)
+    fig.suptitle('Oddball Ses - Topografik Harita', fontsize=14, fontweight='bold')
     plt.show()
     
     # Fark için topomap
     print("  → Fark dalgası topomap'leri...")
     evoked_diff = mne.combine_evoked([evoked_oddball, evoked_standard], 
                                      weights=[1, -1])
-    fig = evoked_diff.plot_topomap(times=times,
-                                   title='Fark Dalgası (Oddball - Standart) - Topografik Harita',
-                                   show=False)
+    fig = evoked_diff.plot_topomap(times=times, show=False)
+    fig.suptitle('Fark Dalgası (Oddball - Standart) - Topografik Harita', 
+                 fontsize=14, fontweight='bold')
     plt.show()
 
 def plot_joint_comparison(evoked_standard, evoked_oddball):
@@ -295,25 +293,23 @@ def plot_joint_comparison(evoked_standard, evoked_oddball):
     
     # Standart için joint plot
     print("  → Standart Ses joint plot...")
-    evoked_standard.plot_joint(times=[0.1, 0.2, 0.3, 0.4, 0.5],
-                               title='Standart Ses - Joint Plot',
-                               show=False)
+    fig = evoked_standard.plot_joint(times=[0.1, 0.2, 0.3, 0.4, 0.5], show=False)
+    fig.suptitle('Standart Ses - Joint Plot', fontsize=14, fontweight='bold')
     plt.show()
     
     # Oddball için joint plot
     print("  → Oddball Ses joint plot...")
-    evoked_oddball.plot_joint(times=[0.1, 0.2, 0.3, 0.4, 0.5],
-                              title='Oddball Ses - Joint Plot',
-                              show=False)
+    fig = evoked_oddball.plot_joint(times=[0.1, 0.2, 0.3, 0.4, 0.5], show=False)
+    fig.suptitle('Oddball Ses - Joint Plot', fontsize=14, fontweight='bold')
     plt.show()
     
     # Fark için joint plot
     print("  → Fark dalgası joint plot...")
     evoked_diff = mne.combine_evoked([evoked_oddball, evoked_standard], 
                                      weights=[1, -1])
-    evoked_diff.plot_joint(times=[0.1, 0.2, 0.3, 0.4, 0.5],
-                           title='Fark Dalgası (Oddball - Standart) - Joint Plot',
-                           show=False)
+    fig = evoked_diff.plot_joint(times=[0.1, 0.2, 0.3, 0.4, 0.5], show=False)
+    fig.suptitle('Fark Dalgası (Oddball - Standart) - Joint Plot', 
+                 fontsize=14, fontweight='bold')
     plt.show()
 
 def analyze_p300(evoked_standard, evoked_oddball):
