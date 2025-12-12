@@ -126,13 +126,13 @@ def compute_erp(epochs):
     return evoked_standard, evoked_oddball
 
 def visualize_erp_comparison(evoked_standard, evoked_oddball):
-    """ERP'leri karşılaştırmalı görselleştir"""
+    """ERP'leri ayrı grafiklerde görselleştir (detaylı)"""
     print("\n" + "="*60)
-    print("GÖRSELLEŞTİRME")
+    print("DETAYLI ZAMAN SERİSİ GÖRSELLEŞTİRME")
     print("="*60)
     
-    # 1. Zaman serisi karşılaştırması
-    print("\n1. Zaman serisi karşılaştırması çiziliyor...")
+    # Ayrı grafikler (detaylı)
+    print("\nAyrı zaman serisi grafikleri çiziliyor...")
     fig, axes = plt.subplots(2, 1, figsize=(14, 10))
     
     # Tüm kanallar için ortalama
@@ -164,6 +164,103 @@ def visualize_erp_comparison(evoked_standard, evoked_oddball):
     plt.show()
     
     return evoked_diff
+
+def plot_combined_erp_comparison(evoked_standard, evoked_oddball):
+    """Oddball ve Standart ERP'lerini tek grafikte karşılaştır (P300 kanıtı)"""
+    print("\n" + "="*60)
+    print("P300 DALGASI KANITI - KARŞILAŞTIRMALI ERP GRAFİĞİ")
+    print("="*60)
+    
+    # 1. Tüm kanalların ortalaması - Tek grafik
+    print("\n1. Tüm kanalların ortalaması (Global ERP)...")
+    fig = mne.viz.plot_compare_evokeds(
+        {'Standart': evoked_standard, 'Oddball': evoked_oddball},
+        picks='eeg',
+        combine='mean',
+        title='Oddball vs Standart ERP - P300 Dalgası Kanıtı\n(Tüm Kanalların Ortalaması)',
+        show_sensors='upper right',
+        ylim=dict(eeg=[-5, 8]),
+        show=False
+    )
+    plt.tight_layout()
+    plt.show()
+    
+    # 2. Parietal kanallar (P300'nin en güçlü olduğu bölge)
+    print("\n2. Parietal kanallar (P300'nin en güçlü olduğu bölge)...")
+    parietal_chs = [ch for ch in evoked_standard.ch_names if any(x in ch for x in ['Pz', 'P3', 'P4', 'P'])]
+    
+    if parietal_chs:
+        fig = mne.viz.plot_compare_evokeds(
+            {'Standart': evoked_standard, 'Oddball': evoked_oddball},
+            picks=parietal_chs,
+            combine='mean',
+            title='Parietal Bölge - Oddball vs Standart ERP\n(P300 Dalgası - En Güçlü Bölge)',
+            show_sensors='upper right',
+            ylim=dict(eeg=[-3, 10]),
+            show=False
+        )
+        # P300 zamanını işaretle
+        ax = plt.gca()
+        ax.axvline(x=0.3, color='red', linestyle='--', linewidth=2, 
+                   label='P300 Zamanı (~300ms)', alpha=0.7)
+        ax.legend()
+        plt.tight_layout()
+        plt.show()
+    
+    # 3. Manuel karşılaştırma grafiği (daha fazla kontrol)
+    print("\n3. Detaylı karşılaştırma grafiği...")
+    fig, ax = plt.subplots(figsize=(14, 8))
+    
+    # Veriyi çıkar
+    times = evoked_standard.times
+    standard_data = evoked_standard.copy().pick('eeg').get_data().mean(axis=0)
+    oddball_data = evoked_oddball.copy().pick('eeg').get_data().mean(axis=0)
+    
+    # Çiz
+    ax.plot(times, standard_data, 'b-', linewidth=2, label='Standart Ses', alpha=0.8)
+    ax.plot(times, oddball_data, 'r-', linewidth=2, label='Oddball Ses', alpha=0.8)
+    
+    # Fark bölgesini vurgula
+    diff = oddball_data - standard_data
+    ax.fill_between(times, standard_data, oddball_data, 
+                     where=(times >= 0.25) & (times <= 0.4),
+                     alpha=0.3, color='yellow', label='P300 Bölgesi (250-400ms)')
+    
+    # Eksenleri ayarla
+    ax.axhline(y=0, color='black', linestyle='-', linewidth=0.5)
+    ax.axvline(x=0, color='black', linestyle='--', linewidth=1, label='Uyaran Zamanı')
+    ax.axvline(x=0.3, color='red', linestyle='--', linewidth=2, 
+               label='P300 Zamanı (~300ms)', alpha=0.7)
+    
+    ax.set_xlabel('Zaman (saniye)', fontsize=12)
+    ax.set_ylabel('Genlik (µV)', fontsize=12)
+    ax.set_title('Oddball vs Standart ERP Karşılaştırması\nP300 Dalgası Kanıtı (Tüm Kanalların Ortalaması)', 
+                fontsize=14, fontweight='bold')
+    ax.grid(True, alpha=0.3)
+    ax.legend(loc='upper right', fontsize=10)
+    
+    # P300 bölgesini vurgula
+    p300_max_idx = np.argmax(diff[(times >= 0.25) & (times <= 0.4)])
+    p300_time = times[(times >= 0.25) & (times <= 0.4)][p300_max_idx]
+    p300_amplitude = diff[(times >= 0.25) & (times <= 0.4)][p300_max_idx]
+    
+    ax.annotate(f'P300\n({p300_time*1000:.0f}ms, {p300_amplitude:.2f}µV)',
+                xy=(p300_time, oddball_data[times == p300_time][0]),
+                xytext=(p300_time + 0.1, oddball_data[times == p300_time][0] + 2),
+                arrowprops=dict(arrowstyle='->', color='red', lw=2),
+                fontsize=11, fontweight='bold', color='red',
+                bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.7))
+    
+    plt.tight_layout()
+    plt.show()
+    
+    # İstatistikleri yazdır
+    print(f"\n📊 P300 Analizi:")
+    print(f"  - P300 Zamanı: {p300_time*1000:.0f} ms")
+    print(f"  - P300 Genliği (Fark): {p300_amplitude:.2f} µV")
+    print(f"  - Standart Genlik (300ms): {standard_data[times == p300_time][0]:.2f} µV")
+    print(f"  - Oddball Genlik (300ms): {oddball_data[times == p300_time][0]:.2f} µV")
+    print(f"  - Fark: {oddball_data[times == p300_time][0] - standard_data[times == p300_time][0]:.2f} µV")
 
 def plot_topomaps(evoked_standard, evoked_oddball, times=[0.1, 0.2, 0.3, 0.4, 0.5]):
     """Topografik haritalar çiz"""
@@ -330,29 +427,36 @@ def main():
         while True:
             print("\n" + "="*60)
             print("GÖRSELLEŞTİRME SEÇENEKLERİ:")
-            print("1. Zaman serisi karşılaştırması")
-            print("2. Topografik haritalar (Topomap)")
-            print("3. Joint plot (zaman serisi + topomap)")
-            print("4. P300 dalgası analizi")
-            print("5. Tüm görselleştirmeleri çalıştır")
+            print("1. P300 Kanıtı - Tek Grafikte Karşılaştırma (ÖNERİLEN)")
+            print("2. Zaman serisi karşılaştırması (detaylı)")
+            print("3. Topografik haritalar (Topomap)")
+            print("4. Joint plot (zaman serisi + topomap)")
+            print("5. P300 dalgası analizi")
+            print("6. Tüm görselleştirmeleri çalıştır")
             print("0. Çıkış")
             print("="*60)
             
-            choice = input("Seçiminiz (0-5): ").strip()
+            choice = input("Seçiminiz (0-6): ").strip()
             
             if choice == '0':
                 print("\nÇıkılıyor...")
                 break
             elif choice == '1':
-                visualize_erp_comparison(evoked_standard, evoked_oddball)
+                # P300 Kanıtı - Tek grafikte karşılaştırma
+                plot_combined_erp_comparison(evoked_standard, evoked_oddball)
             elif choice == '2':
-                plot_topomaps(evoked_standard, evoked_oddball)
+                # Detaylı zaman serisi karşılaştırması
+                visualize_erp_comparison(evoked_standard, evoked_oddball)
             elif choice == '3':
-                plot_joint_comparison(evoked_standard, evoked_oddball)
+                plot_topomaps(evoked_standard, evoked_oddball)
             elif choice == '4':
+                plot_joint_comparison(evoked_standard, evoked_oddball)
+            elif choice == '5':
                 p300_info = analyze_p300(evoked_standard, evoked_oddball)
                 print_summary(epochs, evoked_standard, evoked_oddball, p300_info)
-            elif choice == '5':
+            elif choice == '6':
+                # Tüm görselleştirmeler
+                plot_combined_erp_comparison(evoked_standard, evoked_oddball)
                 visualize_erp_comparison(evoked_standard, evoked_oddball)
                 plot_topomaps(evoked_standard, evoked_oddball)
                 plot_joint_comparison(evoked_standard, evoked_oddball)
