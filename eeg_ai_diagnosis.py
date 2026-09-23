@@ -155,41 +155,44 @@ class EEGDiagnosticAI:
             if i < n_samples // 2:
                 label = 0  # Sağlıklı
                 # Normal EEG özellikleri
+                # NOT: std'ler büyütüldü, ortalamalar yakınlaştırıldı ki gruplar
+                # gerçek biyolojik veride olduğu gibi birbirine karışsın (gerçekçi
+                # sahtelik) — bkz. Hafta 7 çalışma notları, "%100 doğruluk" uyarısı.
                 features = {
-                    'power_delta': np.random.normal(2.5, 0.5),
-                    'power_theta': np.random.normal(3.0, 0.6),
-                    'power_alpha': np.random.normal(4.5, 0.8),
-                    'power_beta': np.random.normal(3.5, 0.7),
-                    'power_gamma': np.random.normal(2.0, 0.4),
-                    'theta_beta_ratio': np.random.normal(0.85, 0.15),  # Normal oran
-                    'alpha_peak_freq': np.random.normal(10.5, 1.0),
-                    'total_power': np.random.normal(15.5, 2.0),
-                    'frontal_alpha': np.random.normal(4.0, 0.7),
-                    'central_beta': np.random.normal(3.2, 0.6),
-                    'parietal_alpha': np.random.normal(5.0, 0.9),
-                    'signal_variance': np.random.normal(0.5, 0.1),
-                    'signal_mean': np.random.normal(2.0, 0.3),
-                    'frontal_asymmetry': np.random.normal(0.0, 0.1)  # Simetrik
+                    'power_delta': np.random.normal(2.6, 0.7),
+                    'power_theta': np.random.normal(3.3, 0.9),
+                    'power_alpha': np.random.normal(4.2, 1.1),
+                    'power_beta': np.random.normal(3.3, 0.9),
+                    'power_gamma': np.random.normal(2.1, 0.6),
+                    'theta_beta_ratio': np.random.normal(0.95, 0.30),  # Normal oran (daha geniş dağılım)
+                    'alpha_peak_freq': np.random.normal(10.2, 1.3),
+                    'total_power': np.random.normal(15.8, 2.6),
+                    'frontal_alpha': np.random.normal(3.8, 0.9),
+                    'central_beta': np.random.normal(3.1, 0.8),
+                    'parietal_alpha': np.random.normal(4.8, 1.1),
+                    'signal_variance': np.random.normal(0.55, 0.18),
+                    'signal_mean': np.random.normal(2.1, 0.4),
+                    'frontal_asymmetry': np.random.normal(0.02, 0.15)  # Yaklaşık simetrik
                 }
             else:
                 # DEHB grubu (%50)
                 label = 1  # DEHB
                 # DEHB karakteristik özellikleri
                 features = {
-                    'power_delta': np.random.normal(2.8, 0.6),
-                    'power_theta': np.random.normal(4.5, 0.8),  # Artmış theta
-                    'power_alpha': np.random.normal(3.5, 0.7),   # Azalmış alpha
-                    'power_beta': np.random.normal(2.8, 0.6),   # Azalmış beta
-                    'power_gamma': np.random.normal(2.2, 0.5),
-                    'theta_beta_ratio': np.random.normal(1.6, 0.3),  # Yüksek oran (DEHB işareti)
-                    'alpha_peak_freq': np.random.normal(9.5, 1.2),   # Düşük peak
-                    'total_power': np.random.normal(16.8, 2.5),
-                    'frontal_alpha': np.random.normal(3.0, 0.6),      # Azalmış
-                    'central_beta': np.random.normal(2.5, 0.5),     # Azalmış
-                    'parietal_alpha': np.random.normal(4.0, 0.8),
-                    'signal_variance': np.random.normal(0.7, 0.15),  # Artmış değişkenlik
-                    'signal_mean': np.random.normal(2.3, 0.4),
-                    'frontal_asymmetry': np.random.normal(0.15, 0.2)  # Asimetri
+                    'power_delta': np.random.normal(2.75, 0.7),
+                    'power_theta': np.random.normal(4.1, 1.0),  # Artmış theta
+                    'power_alpha': np.random.normal(3.8, 0.9),   # Azalmış alpha
+                    'power_beta': np.random.normal(3.0, 0.8),   # Azalmış beta
+                    'power_gamma': np.random.normal(2.2, 0.6),
+                    'theta_beta_ratio': np.random.normal(1.35, 0.35),  # Yüksek oran (DEHB işareti, geniş dağılım)
+                    'alpha_peak_freq': np.random.normal(9.8, 1.4),   # Düşük peak
+                    'total_power': np.random.normal(16.3, 2.7),
+                    'frontal_alpha': np.random.normal(3.4, 0.8),      # Azalmış
+                    'central_beta': np.random.normal(2.8, 0.7),     # Azalmış
+                    'parietal_alpha': np.random.normal(4.3, 1.0),
+                    'signal_variance': np.random.normal(0.63, 0.20),  # Artmış değişkenlik
+                    'signal_mean': np.random.normal(2.2, 0.45),
+                    'frontal_asymmetry': np.random.normal(0.10, 0.18)  # Hafif asimetri
                 }
             
             features_list.append([features[name] for name in feature_names])
@@ -376,4 +379,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
