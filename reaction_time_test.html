@@ -641,8 +641,10 @@
                     return;
                 }
 
-                // 60% Go (green), 40% No-Go (red/blue)
-                const isGo = Math.random() < 0.6;
+                // %75 Go (green), %25 No-Go (red/blue) - literatur standardi (SART benzeri):
+                // No-Go'nun nadir olmasi, otomatik "bas" refleksini olusturup onu
+                // durdurmayi gercekten zorlastiriyor (orani yuksek tutmak testi kolaylastirirdi).
+                const isGo = Math.random() < 0.75;
                 const stimulusType = isGo ? 'green' : (Math.random() < 0.5 ? 'red' : 'blue');
                 // Go denemelerinde yanit penceresi kisa (gercek bir inhibisyon gorevi icin
                 // otomatik tepki egilimi olusturmak sart), No-Go'da daha uzun (basmamak kolay olmasin diye degil,
