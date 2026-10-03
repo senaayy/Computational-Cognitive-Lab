@@ -20,6 +20,10 @@ Bu depo, bir Yazılım Mühendisi'nin biyomedikal ve nöroteknoloji alanına ge�
 
 ![Stroop analizi: ortalama RT, dağılım, doğruluk ve zaman serisi](docs/images/stroop_analysis.png)
 
+**Ölçülen Etki (Go/No-Go):** Testin ilk sürümünde Go denemeleri için yanıt süresi sınırsızdı (her basış otomatik "doğru" sayılıyordu) ve No-Go oranı çok yüksekti (%40) — bu yüzden ilk pilot denemelerde %100 doğruluk çıkıyordu, gerçek bir inhibisyon ölçümü yapılmıyordu. Kod düzeltildi: Go yanıt penceresi 500ms'ye indirildi, No-Go oranı literatür standardına (SART benzeri, ~%25) çekildi. Düzeltme sonrası toplanan pilot veride (17 deneme, 1 katılımcı, 12 Go + 5 No-Go) **14 doğru, 1 kaçırılan Go, 2 yanlış alarm (%82,4 doğruluk)** ölçüldü — artık test gerçekten hata üretebiliyor.
+
+⚠️ **Örneklem notu:** Bu da küçük bir pilot oturum (N=17) — genellenebilir bir false-alarm/miss oranı iddia etmiyoruz, sadece testin artık çalışır durumda olduğunu gösteriyoruz.
+
 **Analiz Detayı:** 
 - Reaksiyon zamanı (RT) dağılımı
 - Uyumlu/Uyumsuz denemelerdeki doğruluk oranları
