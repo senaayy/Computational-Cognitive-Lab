@@ -649,7 +649,7 @@
                 // Go denemelerinde yanit penceresi kisa (gercek bir inhibisyon gorevi icin
                 // otomatik tepki egilimi olusturmak sart), No-Go'da daha uzun (basmamak kolay olmasin diye degil,
                 // yanlislikla basildiginda bunu "false alarm" olarak yakalamak icin).
-                const RESPONSE_DEADLINE_MS = isGo ? 700 : 2000;
+                const RESPONSE_DEADLINE_MS = isGo ? 500 : 2000;
 
                 const stimulus = document.createElement('div');
                 stimulus.className = `stimulus go-nogo-stimulus ${stimulusType}-circle`;
