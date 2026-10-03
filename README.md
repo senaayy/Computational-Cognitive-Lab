@@ -24,6 +24,8 @@ Bu depo, bir Yazılım Mühendisi'nin biyomedikal ve nöroteknoloji alanına ge�
 
 ⚠️ **Örneklem notu:** Bu da küçük bir pilot oturum (N=17) — genellenebilir bir false-alarm/miss oranı iddia etmiyoruz, sadece testin artık çalışır durumda olduğunu gösteriyoruz.
 
+![Go/No-Go hata analizi: hata tipi dağılımı, Go/No-Go hata oranları, RT karşılaştırması](docs/images/gonogo_analysis.png)
+
 **Analiz Detayı:** 
 - Reaksiyon zamanı (RT) dağılımı
 - Uyumlu/Uyumsuz denemelerdeki doğruluk oranları
