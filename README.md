@@ -18,6 +18,8 @@ Bu depo, bir Yazılım Mühendisi'nin biyomedikal ve nöroteknoloji alanına ge�
 
 ⚠️ **Örneklem notu:** Bu tek bir pilot oturum (1 katılımcı, 9 uyumlu + 20 uyumsuz doğru deneme) — klasik Stroop etkisini doğrulamak için yeterli ama genellenebilir bir sonuç değil. Daha fazla katılımcı/oturumla tekrarlanırsa p-değeri ve etki büyüklüğü değişebilir.
 
+![Stroop analizi: ortalama RT, dağılım, doğruluk ve zaman serisi](docs/images/stroop_analysis.png)
+
 **Analiz Detayı:** 
 - Reaksiyon zamanı (RT) dağılımı
 - Uyumlu/Uyumsuz denemelerdeki doğruluk oranları
