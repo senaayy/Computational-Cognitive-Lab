@@ -14,7 +14,7 @@ Bu depo, bir Yazılım Mühendisi'nin biyomedikal ve nöroteknoloji alanına ge�
 
 **Testler:** Stroop Testi ve Go/No-Go Testi uygulamaları sıfırdan kodlanmıştır.
 
-**Kanıtlanan Etki (Stroop):** Uyumsuz denemelerde reaksiyon süresinin (RT) ortalama 1169ms daha uzun olduğu istatistiksel olarak kanıtlanmıştır.
+**Gözlemlenen Etki (Stroop):** Bir oturumda uyumsuz denemelerde reaksiyon süresi (RT) ortalama ~1169ms daha uzun ölçüldü. Bu farkın istatistiksel anlamlılığı artık `analyze_data.py` içinde gerçek bir Welch t-testi ve Cohen's d etki büyüklüğü ile hesaplanıyor (önceki sürümde bu iddia için kodda bir anlamlılık testi yoktu — düzeltildi); kesin p-değeri her çalıştırmada toplanan veriye bağlı olarak değişir.
 
 **Analiz Detayı:** 
 - Reaksiyon zamanı (RT) dağılımı

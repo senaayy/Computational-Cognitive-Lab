@@ -4,6 +4,7 @@ Stroop Etkisi hesaplama ve görselleştirme
 """
 
 import pandas as pd
+from scipy import stats as scipy_stats
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
@@ -68,7 +69,25 @@ def calculate_stroop_effect(data):
     stroop_effect = stats['incongruent']['mean_rt'] - stats['congruent']['mean_rt']
     
     stats['stroop_effect'] = stroop_effect
-    
+
+    # Gercek istatistiksel anlamlilik testi (Welch t-testi) + etki buyuklugu
+    inc_rt = incongruent_correct['reactionTime'].dropna()
+    con_rt = congruent_correct['reactionTime'].dropna()
+    if len(inc_rt) >= 2 and len(con_rt) >= 2:
+        t_stat, p_value = scipy_stats.ttest_ind(inc_rt, con_rt, equal_var=False)
+        n1, n2 = len(inc_rt), len(con_rt)
+        pooled_std = (((n1 - 1) * inc_rt.std()**2 + (n2 - 1) * con_rt.std()**2) / (n1 + n2 - 2)) ** 0.5
+        cohens_d = stroop_effect / pooled_std if pooled_std > 0 else 0
+        stats['t_stat'] = t_stat
+        stats['p_value'] = p_value
+        stats['cohens_d'] = cohens_d
+        stats['significant'] = p_value < 0.05
+    else:
+        stats['t_stat'] = None
+        stats['p_value'] = None
+        stats['cohens_d'] = None
+        stats['significant'] = None
+
     return stats
 
 def visualize_stroop_effect(data, stats, output_dir='results'):
@@ -193,9 +212,15 @@ def print_statistics(stats):
     print(f"🎯 STROOP ETKİSİ: {stats['stroop_effect']:.2f} ms")
     print("="*60)
     
-    if stats['stroop_effect'] > 0:
-        print(f"\n✅ Stroop Etkisi tespit edildi!")
+    if stats.get('p_value') is None:
+        print(f"\n⚠️  Anlamlılık testi için yeterli veri yok (en az 2 denek/deneme gerekir).")
+    elif stats['stroop_effect'] > 0 and stats['significant']:
+        print(f"\n✅ Stroop Etkisi tespit edildi ve istatistiksel olarak anlamlı!")
         print(f"   Uyumsuz denemeler, uyumlu denemelerden {stats['stroop_effect']:.2f} ms daha yavaş.")
+        print(f"   t({stats['congruent']['count'] + stats['incongruent']['count'] - 2}) = {stats['t_stat']:.3f}, p = {stats['p_value']:.4f}, Cohen's d = {stats['cohens_d']:.3f}")
+    elif stats['stroop_effect'] > 0 and not stats['significant']:
+        print(f"\n⚠️  Uyumsuz denemeler {stats['stroop_effect']:.2f} ms daha yavaş görünüyor ama bu fark istatistiksel olarak anlamlı DEĞİL.")
+        print(f"   t({stats['congruent']['count'] + stats['incongruent']['count'] - 2}) = {stats['t_stat']:.3f}, p = {stats['p_value']:.4f} (p >= 0.05)")
     else:
         print(f"\n⚠️  Beklenmeyen sonuç: Stroop Etkisi negatif veya sıfır.")
     
