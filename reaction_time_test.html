@@ -644,6 +644,10 @@
                 // 60% Go (green), 40% No-Go (red/blue)
                 const isGo = Math.random() < 0.6;
                 const stimulusType = isGo ? 'green' : (Math.random() < 0.5 ? 'red' : 'blue');
+                // Go denemelerinde yanit penceresi kisa (gercek bir inhibisyon gorevi icin
+                // otomatik tepki egilimi olusturmak sart), No-Go'da daha uzun (basmamak kolay olmasin diye degil,
+                // yanlislikla basildiginda bunu "false alarm" olarak yakalamak icin).
+                const RESPONSE_DEADLINE_MS = isGo ? 700 : 2000;
 
                 const stimulus = document.createElement('div');
                 stimulus.className = `stimulus go-nogo-stimulus ${stimulusType}-circle`;
@@ -657,87 +661,74 @@
                 let responded = false;
                 let timeoutId;
 
+                function finishTrial(respondedNow, reactionTime) {
+                    responded = true;
+                    clearTimeout(timeoutId);
+                    document.removeEventListener('keydown', handleSpacePress);
+
+                    const detailedTime = getDetailedTime();
+                    let correct, errorType;
+
+                    if (isGo) {
+                        // Go: suresi icinde basildiysa dogru, suresi gecip basilmadiysa "kacirilan Go"
+                        correct = respondedNow;
+                        errorType = respondedNow ? 'correct' : 'missed_go';
+                    } else {
+                        // No-Go: hic basilmadiysa dogru, basildiysa (ne zaman olursa olsun) "yanlis alarm"
+                        correct = !respondedNow;
+                        errorType = respondedNow ? 'false_alarm' : 'correct';
+                    }
+
+                    const trialData = {
+                        trial: trialCount + 1,
+                        stimulusType: stimulusType,
+                        isGo: isGo,
+                        responded: respondedNow,
+                        correct: correct,
+                        reactionTime: respondedNow ? reactionTime : null,
+                        errorType: errorType,
+                        timestamp: new Date().toISOString(),
+                        detailedTime: detailedTime
+                    };
+
+                    gonogoData.push(trialData);
+
+                    // Save trial to backend
+                    saveTrial('gonogo', trialData);
+
+                    // Show feedback
+                    const feedback = document.getElementById('gonogo-feedback');
+                    if (correct) {
+                        feedback.innerHTML = respondedNow
+                            ? `<span class="correct">✓ Doğru! (${reactionTime}ms)</span>`
+                            : `<span class="correct">✓ Doğru! Tepki vermediniz.</span>`;
+                    } else {
+                        feedback.innerHTML = isGo
+                            ? `<span class="incorrect">✗ Kaçırıldı! Süre içinde basmadınız.</span>`
+                            : `<span class="incorrect">✗ Yanlış! Basmamanız gerekiyordu. (${reactionTime}ms)</span>`;
+                    }
+
+                    setTimeout(() => {
+                        trialCount++;
+                        showGoNoGoStimulus();
+                    }, 1000);
+                }
+
                 function handleSpacePress(event) {
                     if (event.code === 'Space' && !responded) {
                         event.preventDefault();
-                        responded = true;
                         const reactionTime = Date.now() - startTime;
-                        const correct = isGo;
-
-                        const detailedTime = getDetailedTime();
-                        const errorType = correct ? 'correct' : (isGo ? 'missed_go' : 'false_alarm');
-                        
-                        const trialData = {
-                            trial: trialCount + 1,
-                            stimulusType: stimulusType,
-                            isGo: isGo,
-                            responded: true,
-                            correct: correct,
-                            reactionTime: reactionTime,
-                            errorType: errorType,
-                            timestamp: new Date().toISOString(),
-                            detailedTime: detailedTime
-                        };
-                        
-                        gonogoData.push(trialData);
-                        
-                        // Save trial to backend
-                        saveTrial('gonogo', trialData);
-
-                        clearTimeout(timeoutId);
-                        document.removeEventListener('keydown', handleSpacePress);
-
-                        // Show feedback
-                        const feedback = document.getElementById('gonogo-feedback');
-                        if (correct) {
-                            feedback.innerHTML = `<span class="correct">✓ Doğru! (${reactionTime}ms)</span>`;
-                        } else {
-                            feedback.innerHTML = `<span class="incorrect">✗ Yanlış! Basmamanız gerekiyordu. (${reactionTime}ms)</span>`;
-                        }
-
-                        setTimeout(() => {
-                            trialCount++;
-                            showGoNoGoStimulus();
-                        }, 1000);
+                        finishTrial(true, reactionTime);
                     }
                 }
 
-                // Timeout for No-Go trials
-                if (!isGo) {
-                    timeoutId = setTimeout(() => {
-                        if (!responded) {
-                            responded = true;
-                            const detailedTime = getDetailedTime();
-                            
-                            const trialData = {
-                                trial: trialCount + 1,
-                                stimulusType: stimulusType,
-                                isGo: isGo,
-                                responded: false,
-                                correct: true,
-                                reactionTime: null,
-                                errorType: 'correct',
-                                timestamp: new Date().toISOString(),
-                                detailedTime: detailedTime
-                            };
-                            
-                            gonogoData.push(trialData);
-                            
-                            // Save trial to backend
-                            saveTrial('gonogo', trialData);
-
-                            document.removeEventListener('keydown', handleSpacePress);
-
-                            const feedback = document.getElementById('gonogo-feedback');
-                            feedback.innerHTML = `<span class="correct">✓ Doğru! Tepki vermediniz.</span>`;
-
-                            setTimeout(() => {
-                                trialCount++;
-                                showGoNoGoStimulus();
-                            }, 1000);
-                        }
-                    }, 2000); // 2 second timeout for No-Go
-                }
+                // Hem Go hem No-Go icin tek bir yanit penceresi: suresi gecip
+                // tepki gelmezse (Go icin "kacirildi", No-Go icin "dogru, basilmadi") otomatik kapat.
+                timeoutId = setTimeout(() => {
+                    if (!responded) {
+                        finishTrial(false, null);
+                    }
+                }, RESPONSE_DEADLINE_MS);
 
                 document.addEventListener('keydown', handleSpacePress);
             }
