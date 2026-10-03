@@ -114,6 +114,8 @@ def analyze_gonogo_errors(data):
     go_errors = go_trials[go_trials['correct'] == False]
     nogo_errors = nogo_trials[nogo_trials['correct'] == False]
     
+    incorrect_total = len(go_errors) + len(nogo_errors)
+
     return {
         'error_analysis': error_analysis,
         'error_counts': error_counts,
@@ -121,7 +123,9 @@ def analyze_gonogo_errors(data):
         'nogo_errors': len(nogo_errors),
         'total_trials': len(data),
         'go_trials': len(go_trials),
-        'nogo_trials': len(nogo_trials)
+        'nogo_trials': len(nogo_trials),
+        'correct_trials': len(data) - incorrect_total,
+        'incorrect_trials': incorrect_total
     }
 
 def visualize_stroop_errors(data, analysis, output_dir='results'):
