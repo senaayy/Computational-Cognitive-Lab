@@ -14,7 +14,9 @@ Bu depo, bir Yazılım Mühendisi'nin biyomedikal ve nöroteknoloji alanına ge�
 
 **Testler:** Stroop Testi ve Go/No-Go Testi uygulamaları sıfırdan kodlanmıştır.
 
-**Gözlemlenen Etki (Stroop):** Bir oturumda uyumsuz denemelerde reaksiyon süresi (RT) ortalama ~1169ms daha uzun ölçüldü. Bu farkın istatistiksel anlamlılığı artık `analyze_data.py` içinde gerçek bir Welch t-testi ve Cohen's d etki büyüklüğü ile hesaplanıyor (önceki sürümde bu iddia için kodda bir anlamlılık testi yoktu — düzeltildi); kesin p-değeri her çalıştırmada toplanan veriye bağlı olarak değişir.
+**Ölçülen Etki (Stroop):** Uygulamanın kendi `app.py`/`reaction_time_test.html` arayüzüyle toplanan gerçek bir pilot oturumda (30 deneme, tek katılımcı) uyumsuz denemelerde reaksiyon süresi (RT) ortalama 599.89ms daha uzun ölçüldü (uyumlu: 1185.11ms, uyumsuz: 1785.00ms). `analyze_data.py` artık gerçek bir Welch t-testi ve Cohen's d etki büyüklüğü hesaplıyor: **t(27) = 2.271, p = 0.0321, Cohen's d = 0.650** (anlamlı, orta-büyük etki büyüklüğü).
+
+⚠️ **Örneklem notu:** Bu tek bir pilot oturum (1 katılımcı, 9 uyumlu + 20 uyumsuz doğru deneme) — klasik Stroop etkisini doğrulamak için yeterli ama genellenebilir bir sonuç değil. Daha fazla katılımcı/oturumla tekrarlanırsa p-değeri ve etki büyüklüğü değişebilir.
 
 **Analiz Detayı:** 
 - Reaksiyon zamanı (RT) dağılımı
